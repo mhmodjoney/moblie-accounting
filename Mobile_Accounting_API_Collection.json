@@ -1,0 +1,800 @@
+{
+	"info": {
+		"_postman_id": "mobile-accounting-api-collection",
+		"name": "Mobile Accounting API Collection",
+		"description": "Complete API collection for Mobile Accounting subscription management system with device-based authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "mobile-accounting"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"john_doe\",\n  \"full_name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"mypassword123\",\n  \"subscription_type\": \"free_trial\",\n  \"role\": \"user\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new user with subscription plan. Role defaults to 'user' if not specified."
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"full_name\": \"System Administrator\",\n  \"email\": \"admin@admin.com\",\n  \"password\": \"admin123456\",\n  \"subscription_type\": \"free_trial\",\n  \"role\": \"admin\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"register"
+							]
+						},
+						"description": "Register a new admin user. Admin users get 'active' status automatically."
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"mypassword123\",\n  \"device_id\": \"AA:BB:CC:DD:EE:FF\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "User login with email, password, and device_id. Device-based authentication - first login saves device_id, subsequent logins only work from same device."
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@admin.com\",\n  \"password\": \"admin123456\",\n  \"device_id\": \"ADMIN_DEVICE_001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Admin login with email, password, and device_id. Device-based authentication - first login saves device_id, subsequent logins only work from same device."
+					},
+					"response": []
+				}
+			],
+			"description": "User authentication endpoints with device-based security and role support"
+		},
+		{
+			"name": "Device Authentication Testing",
+			"item": [
+				{
+					"name": "Login First Time (New Device)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\",\n  \"device_id\": \"NEW_DEVICE_001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Test first-time login - device_id will be saved and user becomes active"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Same Device (Success)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\",\n  \"device_id\": \"NEW_DEVICE_001\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Test login from same device - should succeed"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Different Device (Blocked)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\",\n  \"device_id\": \"DIFFERENT_DEVICE_002\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Test login from different device - should be blocked with error message"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Missing Device ID (Error)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"test123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Test login without device_id - should return error requiring device_id"
+					},
+					"response": []
+				}
+			],
+			"description": "Test scenarios for device-based authentication system"
+		},
+		{
+			"name": "User Management",
+			"item": [
+				{
+					"name": "Check Subscription Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/subscription",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"subscription"
+							]
+						},
+						"description": "Get user's current subscription status, days remaining, and details"
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"subscription_type\": \"6_month\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/upgrade-subscription",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"upgrade-subscription"
+							]
+						},
+						"description": "Upgrade user's subscription to a new plan. Valid plans: free_trial, 1_month, 3_month, 6_month, 1_year, 2_year, lifetime"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Status",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"status"
+							]
+						},
+						"description": "Get user account status and information"
+					},
+					"response": []
+				}
+			],
+			"description": "User management and subscription endpoints"
+		},
+		{
+			"name": "Subscription Plans",
+			"item": [
+				{
+					"name": "Get All Plans",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/subscription-plans",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscription-plans"
+							]
+						},
+						"description": "Get all available subscription plans (Public endpoint)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Plan by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/subscription-plans/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscription-plans",
+								"1"
+							]
+						},
+						"description": "Get specific subscription plan by ID"
+					},
+					"response": []
+				}
+			],
+			"description": "Subscription plan management endpoints"
+		},
+		{
+			"name": "Subscriptions",
+			"item": [
+				{
+					"name": "Get All Subscriptions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscriptions"
+							]
+						},
+						"description": "Get all subscriptions for the authenticated user"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Subscription by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscriptions/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscriptions",
+								"1"
+							]
+						},
+						"description": "Get specific subscription by ID"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 1,\n  \"subscription_type\": \"6_month\",\n  \"payment_id\": \"pay_123456\",\n  \"payment_method\": \"credit_card\",\n  \"auto_renew\": true\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/subscriptions",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscriptions"
+							]
+						},
+						"description": "Create a new subscription for a user"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Subscription",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"subscription_type\": \"1_year\",\n  \"auto_renew\": false\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/subscriptions/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscriptions",
+								"1"
+							]
+						},
+						"description": "Update an existing subscription"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Subscription",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/subscriptions/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"subscriptions",
+								"1"
+							]
+						},
+						"description": "Delete a subscription"
+					},
+					"response": []
+				}
+			],
+			"description": "Subscription management endpoints"
+		},
+		{
+			"name": "Admin Management",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/users",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"users"
+							]
+						},
+						"description": "Get all users with their subscription details (Admin only)"
+					},
+					"response": []
+				},
+				{
+					"name": "Upgrade User Subscription",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 2,\n  \"subscription_type\": \"1_year\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/upgrade-user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"upgrade-user"
+							]
+						},
+						"description": "Upgrade any user's subscription (Admin only). Valid plans: free_trial, 1_month, 3_month, 6_month, 1_year, 2_year, lifetime"
+					},
+					"response": []
+				},
+				{
+					"name": "Update User Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 2,\n  \"status\": \"active\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/update-user-status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"update-user-status"
+							]
+						},
+						"description": "Update any user's status (Admin only). Valid statuses: new, active, suspended, expired, banned, inactive, disabled"
+					},
+					"response": []
+				},
+				{
+					"name": "Reset User Device",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": 2\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/auth/admin/reset-user-device",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"admin",
+								"reset-user-device"
+							]
+						},
+						"description": "Reset user's device_id to allow login from a new device (Admin only). User status will be reset to 'new' and they need to login again."
+					},
+					"response": []
+				}
+			],
+			"description": "Admin-only endpoints for user management"
+		},
+		{
+			"name": "File Upload",
+			"item": [
+				{
+					"name": "Upload Image",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/api/upload/upload-image",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"upload",
+								"upload-image"
+							]
+						},
+						"description": "Upload image file to Cloudinary"
+					},
+					"response": []
+				}
+			],
+			"description": "File upload endpoints"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Auto-save tokens and device_id from login responses",
+					"if (pm.request.url.path.includes('/auth/login')) {",
+					"    pm.sendRequest({",
+					"        url: pm.request.url,",
+					"        method: 'POST',",
+					"        header: pm.request.headers,",
+					"        body: pm.request.body",
+					"    }, function (err, response) {",
+					"        if (response.json().token) {",
+					"            const userData = response.json().user;",
+					"            if (userData.role === 'admin') {",
+					"                pm.collectionVariables.set('admin_token', response.json().token);",
+					"            } else {",
+					"                pm.collectionVariables.set('auth_token', response.json().token);",
+					"            }",
+					"            // Save device_id if present",
+					"            if (userData.device_id) {",
+					"                pm.collectionVariables.set('device_id', userData.device_id);",
+					"            }",
+					"        }",
+					"    });",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Test script for common validations",
+					"pm.test('Status code is 200 or 201', function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+					"});",
+					"",
+					"pm.test('Response has required fields', function () {",
+					"    const jsonData = pm.response.json();",
+					"    pm.expect(jsonData).to.have.property('message');",
+					"});",
+					"",
+					"// Auto-save tokens and device_id from login responses",
+					"if (pm.request.url.path.includes('/auth/login') && pm.response.code === 200) {",
+					"    const response = pm.response.json();",
+					"    if (response.token) {",
+					"        const userData = response.user;",
+					"        if (userData.role === 'admin') {",
+					"            pm.collectionVariables.set('admin_token', response.token);",
+					"            console.log('Admin token saved');",
+					"        } else {",
+					"            pm.collectionVariables.set('auth_token', response.token);",
+					"            console.log('User token saved');",
+					"        }",
+					"        // Save device_id if present",
+					"        if (userData.device_id) {",
+					"            pm.collectionVariables.set('device_id', userData.device_id);",
+					"            console.log('Device ID saved:', userData.device_id);",
+					"        }",
+					"    }",
+					"}"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "auth_token",
+			"value": "your_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "your_admin_jwt_token_here",
+			"type": "string"
+		},
+		{
+			"key": "device_id",
+			"value": "TEST_DEVICE_001",
+			"type": "string"
+		}
+	]
+}
